@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-
+scale=1.0">
+ <title>Moutadarib</title>
+ <link rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+>
+ <link rel="stylesheet" href="css.css">
+ </head>
+ <body>
+ 
+ <div class="container">
+ <h2>Log-In</h2>
+ <input type="text" placeholder="Username" id="username">
+ <input type="password" placeholder="Password" id="pass">
+ <button id="submit">Register</button>
+ <button id="amine">amine</button>
+ <p id="message-ref">login Successfully!</p>
+ </div>
+ <script src="js.js"></script>
+ </body>
+</html>
+document.addEventListener("DOMContentLoaded", () => {
+ // Get elements with null checks
+ const usernameRef = document.getElementById("username");
+ const passwordRef = document.getElementById("pass");
+ const submitbtn = document.getElementById("submit");
+ const messageRef = document.getElementById("message-ref");
+ if (!usernameRef || !passwordRef || !submitbtn || !messageRef) {
+ console.error("One or more form elements not found!");
+ return;
+ }
+ // Improved validation functions (with trim and better regex flags)const isUsernameValid = () => {
+ const value = usernameRef.value.trim();
+ const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]{4,32}$/i; // Removed /g, 
+added $ for end anchor
+ return usernameRegex.test(value);
+ };
+ const isPasswordValid = () => {
+ const value = passwordRef.value;
+ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/; // Removed 
+/gm
+ return passwordRegex.test(value);
+ };
+ 
+ const updateInputStyle = (input, isValid) => {
+ messageRef.style.visibility = "hidden"; // Hide message on input change
+ input.classList.remove("input-invalid", "input-valid", "input-neutral");
+ 
+ if (isValid) {
+ input.classList.add("input-valid");
+ } else {
+ input.classList.add("input-invalid");
+ }
+ };
+ // Initial neutral state
+ const setNeutralState = (input) => {
+ input.classList.remove("input-invalid", "input-valid");
+ input.classList.add("input-neutral");
+ };
+ setNeutralState(usernameRef);
+ setNeutralState(passwordRef);
+ // Username input listener
+ usernameRef.addEventListener("input", () => {
+ updateInputStyle(usernameRef, isUsernameValid());
+ });
+ // Password input listener
+ passwordRef.addEventListener("input", () => {
+ updateInputStyle(passwordRef, isPasswordValid());
+ // Button hover effect (simplified: subtle shake if invalid; add mouseleave 
+reset)
+ // Commented out the complex translate—replace with this if you want a shake 
+effect
+ submitbtn.addEventListener("mouseenter", () => {
+ if (!isUsernameValid() || !isPasswordValid()) {
+ submitbtn.style.transform = "translateX(5px)"; // Subtle move instead 
+of huge translate
+ submitbtn.style.transition = "transform 0.2s ease";
+ }
+ });
+ submitbtn.addEventListener("mouseleave", () => {
+ submitbtn.style.transform = "translateX(0)"; // Always reset
+ });
+ // Submit click: Validate before showing message; prevent if invalid
+ submitbtn.addEventListener("click", (e) => {
+ const usernameValid = isUsernameValid();
+ const passwordValid = isPasswordValid();
+ if (!usernameValid || !passwordValid) {
+ e.preventDefault(); // Stop form submission if in a <form>
+ messageRef.textContent = "Please fix errors above."; // Dynamic text
+ messageRef.style.color = "#fe2e2e"; // Red for error
+ } else {
+ messageRef.textContent = "Login successful!"; // Or your success 
+message
+ messageRef.style.color = "#34bd34";
+ 
+ }
+ messageRef.style.visibility = "visible";
+ // Optional: Reset fields after success
+ // usernameRef.value = ""; passwordRef.value = "";
+ });
+});
+* {
+ padding: 0;
+ margin: 0;
+ box-sizing: border-box;
+font-family: "Poppins", sans-serif;
+}
+body {
+ background-color: #180148;
+}
+.container {
+ width: 31.25em;
+ background-color: #f8f8f8;
+ padding: 1.4em 3.75em;
+ position: absolute;
+ transform: translate(-50%, -50%);
+ top: 50%;
+ left: 50%;
+ border-radius: 0.7em;
+ box-shadow: 0 1em 4em rgba(71, 50, 4, 0.3);
+ display: flex; 
+ flex-direction: column;
+ align-items: center;
+}
+h2 {
+ text-align: center;
+ font-size: 2rem; 
+ margin-bottom: 1.875em; 
+ color: rgb(6, 74, 127);
+}
+input,
+#submit,
+#amine {
+ border: none;
+ outline: none;
+ display: block;
+}
+input {
+ width: 100%;
+ background-color: transparent;
+ margin-bottom: 2em;
+ font-size: 1.25rem; 
+ padding: 1em 0 0.5em 0.5em;
+border-bottom: 2px solid #202020;
+ color: #202020; 
+}
+input:focus {
+ border-bottom-color: #096292; 
+}
+#submit,
+#amine {
+ font-size: 1.1em;
+ width: 7em;
+ background-color: #096292;
+ color: white;
+ padding: 0.8em 1em; 
+ margin-top: 2em;
+ border-radius: 0.3em;
+ cursor: pointer; 
+}
+#submit:focus,
+#amine:focus {
+ outline: 2px solid #096292; 
+}
+#message-ref {
+ font-size: 0.9em;
+ margin-top: 1.5em;
+ color: #34bd34;
+ visibility: hidden;
+}
+@media (max-width: 480px) {
+ .container {
+ width: 90%;
+ padding: 1em 1.5em;
+ }
+}
